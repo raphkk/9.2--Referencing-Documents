@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/playground')
   .then(() => console.log('Connected to MongoDB...'))
   .catch(err => console.error('Could not connect to MongoDB...', err));
-
+  
 const Author = mongoose.model('Author', new mongoose.Schema({
   name: String,
   bio: String,
@@ -42,12 +42,14 @@ async function createCourse(name, author) {
 async function listCourses() { 
   const courses = await Course
     .find()
-    .select('name');
+    .populate('author', 'name -_id')
+    .populate('category', 'name')
+    .select('name author');
   console.log(courses);
 }
 
 //createAuthor('Mosh', 'My bio', 'My Website');
 
-createCourse('Node Course', '64e009d842125179682b1a13')
+//createCourse('Node Course', '64e009d842125179682b1a13')
 
-// listCourses();
+listCourses();
